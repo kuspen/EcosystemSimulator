@@ -16,9 +16,6 @@ const int WINDOW_HEIGHT = 720;
 const int CHARACTER_SIZE = 10;
 
 CMap g_map(WINDOW_WIDTH/CHARACTER_SIZE, WINDOW_HEIGHT/CHARACTER_SIZE);
-std::vector<CCharacter*> g_characters;
-
-
 
 int init() {
 	
@@ -35,14 +32,10 @@ int init() {
 	CGreedySearchRoutine* greedySearchRoutine = new CGreedySearchRoutine(&g_map);
 	herbivore->setRoutine(greedySearchRoutine);
 
-	g_characters.push_back(herbivore);
-	g_characters.push_back(grass1);
-	g_characters.push_back(grass2);
-	g_characters.push_back(grass3);
-
-	for (auto itr = g_characters.begin(); itr != g_characters.end(); itr++) {
-		g_map.setCharacter(*itr);
-	}
+	g_map.setCharacter(herbivore);
+	g_map.setCharacter(grass1);
+	g_map.setCharacter(grass2);
+	g_map.setCharacter(grass3);
 
 	ChangeWindowMode(TRUE);
 	SetGraphMode(WINDOW_WIDTH, WINDOW_HEIGHT, 16);
@@ -131,15 +124,6 @@ int exec() {
 }
 
 int status_update() {
-
-	// g_characters‚Æg_map“à‚ÌCharacters‚ğ“¯Šú
-	std::set<CCharacter*> willRemovedCharacters = g_map.getWillRemovedCharacters();
-	for (auto s_itr = willRemovedCharacters.begin(); s_itr != willRemovedCharacters.end(); s_itr++) {
-		auto itr = std::find(g_characters.begin(), g_characters.end(),(*s_itr));
-		if (itr != g_characters.end()) {
-			g_characters.erase(itr);
-		}
-	}
 
 	// map“à‚ÌCharacters‚©‚çíœ—\’è‚ÌCharacter‚ğíœ
 	g_map.update_characters();
