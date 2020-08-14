@@ -85,6 +85,29 @@ int draw() {
 
 }
 
+int setup() {
+	
+	ECharacterTypes *map = g_map.getMaps();
+	std::vector<CCharacter*> characters = g_map.getCharacters();
+	int x_size = g_map.getXSize();
+	int y_size = g_map.getYSize();
+
+	// Grass‚ğƒ‰ƒ“ƒ_ƒ€‚É”­¶‚³‚¹‚é
+	for (int x = 0; x < x_size; x++) {
+		for (int y = 0; y < y_size; y++) {
+			if (map[x + x_size * y] == ECharacterTypes::CTYPE_NONE) {
+				int rand = GetRand(20000);
+				if (rand == 0) {
+					CGrass* grass = new CGrass(x, y);
+					g_map.setCharacter(grass);
+				}
+			}
+		}
+	}
+
+	return 0;
+}
+
 int move() {
 
 	std::vector<CCharacter*> characters = g_map.getCharacters();
@@ -108,8 +131,18 @@ int exec() {
 }
 
 int status_update() {
-	g_map.update_characters();
 
+	// g_characters‚Æg_map“à‚ÌCharacters‚ğ“¯Šú
+	std::set<CCharacter*> willRemovedCharacters = g_map.getWillRemovedCharacters();
+	for (auto s_itr = willRemovedCharacters.begin(); s_itr != willRemovedCharacters.end(); s_itr++) {
+		auto itr = std::find(g_characters.begin(), g_characters.end(),(*s_itr));
+		if (itr != g_characters.end()) {
+			g_characters.erase(itr);
+		}
+	}
+
+	// map“à‚ÌCharacters‚©‚çíœ—\’è‚ÌCharacter‚ğíœ
+	g_map.update_characters();
 	return 0;
 }
 
@@ -124,6 +157,8 @@ int main(int argc, char* argv[]) {
 	while (ProcessMessage() == 0 && CheckHitKey(KEY_INPUT_ESCAPE) == 0) {
 
 		ClearDrawScreen();
+
+		setup();
 
 		move();
 
