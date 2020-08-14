@@ -58,8 +58,10 @@ int init() {
 
 int draw() {
 	
+	std::vector<CCharacter*> characters = g_map.getCharacters();
+
 	// Character‚ÌˆÊ’u‚ð•`ŽÊ
-	for (auto itr = g_characters.begin(); itr != g_characters.end(); itr++) {
+	for (auto itr = characters.begin(); itr != characters.end(); itr++) {
 		int x = (*itr)->getX() * CHARACTER_SIZE;
 		int y = (*itr)->getY() * CHARACTER_SIZE;
 		ECharacterTypes type = (*itr)->getType();
@@ -85,12 +87,32 @@ int draw() {
 
 int move() {
 
-	for (auto itr = g_characters.begin(); itr != g_characters.end(); itr++) {
+	std::vector<CCharacter*> characters = g_map.getCharacters();
+
+	for (auto itr = characters.begin(); itr != characters.end(); itr++) {
 		(*itr)->move();
 	}
 
 	return 0;
 }
+
+int exec() {
+
+	std::vector<CCharacter*> characters = g_map.getCharacters();
+
+	for (auto itr = characters.begin(); itr != characters.end(); itr++) {
+		(*itr)->exec();
+	}
+
+	return 0;
+}
+
+int status_update() {
+	g_map.update_characters();
+
+	return 0;
+}
+
 
 int main(int argc, char* argv[]) {
 
@@ -105,16 +127,15 @@ int main(int argc, char* argv[]) {
 
 		move();
 
-		// exec();
+		exec();
 
-		// status_update();
-
+		status_update();
 
 		draw();
 
 		ScreenFlip();
 
-		WaitTimer(1000);
+		WaitTimer(100);
 
 	}
 

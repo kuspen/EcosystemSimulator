@@ -1,6 +1,7 @@
 #pragma once
 #include "CCharacter.h"
 #include <vector>
+#include <set>
 
 class CCharacter;
 enum class ECharacterTypes;
@@ -13,6 +14,7 @@ private:
 
 	// Map“à‚ÌCharacter”z—ñ
 	std::vector<CCharacter*> m_characters;
+	std::set<CCharacter*> m_willRemovedCharacters;
 
 	// Map‚ÌÀ•W–ˆ‚ÌCharacterˆÊ’u
 	ECharacterTypes *m_maps;
@@ -22,10 +24,14 @@ public:
 	~CMap();
 
 	void setCharacter(CCharacter* character);
+	void setWillRemovedCharacter(int x, int y);
 
 	int getXSize();
 	int getYSize();
 	ECharacterTypes* getMaps();
+	CCharacter* getCharacter(int x, int y);
+	std::vector<CCharacter*> getCharacters();
+	std::set<CCharacter*> getWillRemovedCharacters();
 
 	void updateMaps();
 

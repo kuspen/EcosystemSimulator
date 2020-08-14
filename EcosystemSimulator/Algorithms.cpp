@@ -41,12 +41,12 @@ void breadthFirstSearch(CMap* map, CCharacter *character, std::vector<ECharacter
 				ECharacterTypes target = *itr;
 				if (graph[current.x + graph_x_size * (current.y - 1)] == target) {
 					*x = current.x;
-					*y = current.y + 1;
+					*y = current.y - 1;
 					delete[] graph;
 					return;
 				}
 				else if (graph[current.x + graph_x_size * (current.y - 1)] == ECharacterTypes::CTYPE_NONE) {
-					Coordinate temp = {current.x, current.y + 1};
+					Coordinate temp = {current.x, current.y - 1};
 					graph[temp.x + graph_x_size * temp.y] = ECharacterTypes::CTYPE_NULL;
 					result[current.x + graph_x_size * (current.y - 1)] = result[current.x + graph_x_size * current.y] + 1;
 					q.push(temp);

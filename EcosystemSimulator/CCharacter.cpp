@@ -43,11 +43,20 @@ std::vector<ECharacterTypes> CCharacter::getTargets() {
 void CCharacter::move() {
 
 	if (m_routine != nullptr) {
-		m_routine->run(this);
+		m_routine->move(this);
 
 		m_x = m_routine->getNextX();
 		m_y = m_routine->getNextY();
 	}
 
 }
+
+void CCharacter::exec() {
+
+	if (m_routine != nullptr) {
+		m_routine->exec(this);
+	}
+
+}
+
 

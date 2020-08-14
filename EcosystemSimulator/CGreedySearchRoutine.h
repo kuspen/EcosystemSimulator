@@ -16,11 +16,13 @@ public:
 
 //	void setTargetTypes(std::vector<ECharacterTypes> target_types);
 
-	void run(CCharacter *character);
+	void move(CCharacter *character);
+	void exec(CCharacter *character);
 
 //	std::vector<ECharacterTypes> getTargetTypes();
 
 private:
 	
 	void nextCoordinate(CCharacter *character);
+	void execTarget(CCharacter* character);
 };

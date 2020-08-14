@@ -41,5 +41,6 @@ public:
 	std::vector<ECharacterTypes> getTargets();
 
 	void move();
+	void exec();
 
 };

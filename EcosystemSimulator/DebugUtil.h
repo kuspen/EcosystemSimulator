@@ -11,6 +11,7 @@ enum class EDebugMode {
 };
 
 void setDebugMode(EDebugMode mode);
+FILE* getDebugFile();
 EDebugMode getDebugMode();
 
 template<typename ... Args>
@@ -25,6 +26,16 @@ void DebugPrint(const TCHAR *format, Args const& ... args) {
 
 }
 
+template<typename ... Args>
+void DebugDumpFile(const TCHAR* format, Args const& ... args) {
+
+	EDebugMode debug_mode = getDebugMode();
+
+	if (debug_mode == EDebugMode::DEBUG_MODE_DEBUG_FULL) {
+		FILE* fp = getDebugFile();
+		fprintf(fp, format, args ...);
+	}
+}
+
 void DebugOpenFile(std::string fine_name);
-FILE* getDebugFile();
-void DebugCloseFIle();
+void DebugCloseFile();

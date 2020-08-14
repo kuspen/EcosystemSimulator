@@ -22,6 +22,7 @@ public:
 	int getNextX();
 	int getNextY();
 
-	virtual void run(CCharacter *character) = 0;
+	virtual void move(CCharacter *character) = 0;
+	virtual void exec(CCharacter *character) = 0;
 
 };

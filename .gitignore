@@ -338,3 +338,7 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
+/EcosystemSimulator/Log.txt
+/EcosystemSimulator/EcosystemSimulator.vcxproj.filters
+/EcosystemSimulator/EcosystemSimulator.vcxproj
+/EcosystemSimulator.sln
