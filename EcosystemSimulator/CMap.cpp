@@ -31,8 +31,10 @@ void CMap::setWillRemovedCharacter(int x, int y) {
 	for (auto itr = m_characters.begin(); itr != m_characters.end(); itr++) {
 		if ((*itr)->getX() == x && (*itr)->getY() == y) {
 			m_willRemovedCharacters.insert(*itr);
+			return;
 		}
 	}
+	printfDx("BUG!!!");
 }
 
 int CMap::getXSize() {

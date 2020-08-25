@@ -38,6 +38,10 @@ void CCharacter::setBornedHp(int bornedHp) {
 	m_borned_hp = bornedHp;
 }
 
+void CCharacter::setStayedHp(int hp) {
+	m_stayed_hp = hp;
+}
+
 int CCharacter::getX() {
 	return m_x;
 }
@@ -71,6 +75,9 @@ bool CCharacter::isBorn() {
 	return false;
 }
 
+bool CCharacter::isStay() {
+	return m_hp > m_stayed_hp;
+}
 
 void CCharacter::move() {
 

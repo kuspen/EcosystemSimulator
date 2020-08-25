@@ -25,6 +25,9 @@ void CGreedySearchRoutine::exec(CCharacter *character) {
 
 void CGreedySearchRoutine::nextCoordinate(CCharacter *character) {
 
+	// ˆê’è‚ÌHPˆÈã‚Å‚ ‚ê‚Î‚»‚Ìê‚Å‘Ò‹@
+	if (character->isStay()) return;
+
 	std::vector<ECharacterTypes> targets = character->getTargets();
 
 	int size = m_map->getXSize() * m_map->getYSize();
@@ -59,6 +62,9 @@ void CGreedySearchRoutine::nextCoordinate(CCharacter *character) {
 }
 
 void CGreedySearchRoutine::execTarget(CCharacter *character) {
+
+	// ˆê’è‚ÌHPˆÈã‚Å‚ ‚ê‚Î‚»‚Ìê‚Å‘Ò‹@
+	if (character->isStay()) return;
 	
 	std::vector<ECharacterTypes> targets = character->getTargets();
 

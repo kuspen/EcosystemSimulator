@@ -28,6 +28,7 @@ protected:
 
 	int m_recovered_hp;
 	int m_borned_hp;
+	int m_stayed_hp;
 
 public:
 	CCharacter(int x, int y, ECharacterTypes type);
@@ -42,6 +43,7 @@ public:
 	void setHp(int hp);
 	void setRecoveredHp(int hp);
 	void setBornedHp(int hp);
+	void setStayedHp(int hp);
 
 	int getX();
 	int getY();
@@ -55,5 +57,6 @@ public:
 
 	void recover();
 	bool isBorn();
+	bool isStay();
 
 };

@@ -3,6 +3,7 @@
 
 #include "DxLib.h"
 
+#include "CCarnivore.h"
 #include "CHerbivore.h"
 #include "CGrass.h"
 
@@ -31,19 +32,24 @@ void dumpResultFile(std::string file_name) {
 		// åªç›êîï\é¶
 		int num_grass = 0;
 		int num_herbivore = 0;
+		int num_carnivore = 0;
 
 		std::vector<CCharacter*> characters = g_map.getCharacters();
 		for (auto&& character : characters) {
 			CGrass* grass = dynamic_cast<CGrass*>(character);
 			CHerbivore* herbivore = dynamic_cast<CHerbivore*>(character);
+			CCarnivore* carnivore = dynamic_cast<CCarnivore*>(character);
 			if (grass) {
 				num_grass++;
 			}
 			else if (herbivore) {
 				num_herbivore++;
 			}
+			else if (carnivore) {
+				num_carnivore++;
+			}
 		}
-		fprintf(g_result_file_fp, "%d,%d\n", num_grass, num_herbivore);
+		fprintf(g_result_file_fp, "%d,%d,%d\n", num_grass, num_herbivore, num_carnivore);
 
 	}
 
@@ -65,9 +71,32 @@ CHerbivore* makeHerbivore(int x, int y) {
 	herbivore->setHp(100);
 	herbivore->setTargets(greedySearchTarget);
 	herbivore->setBornedHp(150);
-	herbivore->setRecoveredHp(20);
+	herbivore->setRecoveredHp(50);
+	herbivore->setStayedHp(200);
+
 
 	return herbivore;
+}
+
+CCarnivore* makeCarnivore(int x, int y) {
+
+	CCarnivore* carnivore = new CCarnivore(x, y);
+
+	std::vector<ECharacterTypes> greedySearchTarget;
+	greedySearchTarget.push_back(ECharacterTypes::CTYPE_HERBIVORE);
+
+	CGreedySearchRoutine* greedySearchRoutine = new CGreedySearchRoutine(&g_map);
+	greedySearchRoutine->setNextX(x);
+	greedySearchRoutine->setNextY(y);
+	carnivore->setRoutine(greedySearchRoutine);
+
+	carnivore->setHp(140);
+	carnivore->setTargets(greedySearchTarget);
+	carnivore->setBornedHp(150);
+	carnivore->setRecoveredHp(100);
+	carnivore->setStayedHp(200);
+
+	return carnivore;
 }
 
 int init() {
@@ -75,29 +104,25 @@ int init() {
 	std::vector<ECharacterTypes> greedySearchTarget;
 	greedySearchTarget.push_back(ECharacterTypes::CTYPE_GRASS);
 
-	CHerbivore* herbivore = new CHerbivore(1, 1);
 	CGrass* grass1 = new CGrass(32, 22);
 	CGrass* grass2 = new CGrass(43, 42);
 	CGrass* grass3 = new CGrass(14, 28);
 
-	herbivore->setHp(100);
-	herbivore->setTargets(greedySearchTarget);
-	herbivore->setBornedHp(150);
-	herbivore->setRecoveredHp(20);
 
 	grass1->setHp(100);
 	grass2->setHp(100);
 	grass3->setHp(100);
 
-	CGreedySearchRoutine* greedySearchRoutine = new CGreedySearchRoutine(&g_map);
-	greedySearchRoutine->setNextX(1);
-	greedySearchRoutine->setNextY(1);
-	herbivore->setRoutine(greedySearchRoutine);
-
-	g_map.setCharacter(herbivore);
 	g_map.setCharacter(grass1);
 	g_map.setCharacter(grass2);
 	g_map.setCharacter(grass3);
+
+	g_map.setCharacter(makeHerbivore(10, 10));
+	g_map.setCharacter(makeHerbivore(20, 10));
+	g_map.setCharacter(makeHerbivore(30, 10));
+	g_map.setCharacter(makeHerbivore(40, 10));
+	g_map.setCharacter(makeHerbivore(50, 10));
+	g_map.setCharacter(makeCarnivore(60, 10));
 
 	ChangeWindowMode(TRUE);
 	SetGraphMode(WINDOW_WIDTH, WINDOW_HEIGHT, 16);
@@ -137,7 +162,8 @@ int draw() {
 			color = GetColor(0, 0, (*itr)->getHp());
 		}
 		else if (type == ECharacterTypes::CTYPE_CARNIVORE) {
-			color = GetColor(255, 0, 0);
+//			color = GetColor(255, 0, 0);
+			color = GetColor((*itr)->getHp(), 0, 0);
 		}
 		DrawBox(x, y, x + CHARACTER_SIZE, y + CHARACTER_SIZE, color, TRUE);
 
@@ -158,7 +184,7 @@ int setup() {
 	for (int x = 0; x < x_size; x++) {
 		for (int y = 0; y < y_size; y++) {
 			if (map[x + x_size * y] == ECharacterTypes::CTYPE_NONE) {
-				int rand_max = 20;
+				int rand_max = 500;
 				int rand = GetRand(rand_max);
 				if (rand == 0) {
 					CGrass* grass = new CGrass(x, y);
@@ -170,6 +196,7 @@ int setup() {
 
 	for (auto&& character : characters) {
 		CHerbivore* herbivore = dynamic_cast<CHerbivore*>(character);
+		CCarnivore* carnivore = dynamic_cast<CCarnivore*>(character);
 		// herbivoreÇ™î…êBÇ∑ÇÈèàóù
 		if (herbivore) {
 			if (herbivore->isBorn()) {
@@ -190,26 +217,53 @@ int setup() {
 				}
 			}
 		}
+		// carnivoreÇ™î…êBÇ∑ÇÈèàóù
+		else if (carnivore) {
+			if (carnivore->isBorn()) {
+				carnivore->setHp(carnivore->getHp() - 100);
+				int x = carnivore->getX();
+				int y = carnivore->getY();
+				if (x - 1 >= 0 && map[(x - 1) + x_size * y] == ECharacterTypes::CTYPE_NONE) {
+					g_map.setCharacter(makeCarnivore(x-1, y));
+				}
+				else if (x + 1 < x_size && map[(x + 1) + x_size * y] == ECharacterTypes::CTYPE_NONE) {
+					g_map.setCharacter(makeCarnivore(x+1, y));
+				}
+				else if (y - 1 >= 0 && map[x + x_size * (y - 1)] == ECharacterTypes::CTYPE_NONE) {
+					g_map.setCharacter(makeCarnivore(x, y-1));
+				}
+				else if (y + 1 < y_size && map[x + x_size * (y + 1)] == ECharacterTypes::CTYPE_NONE) {
+					g_map.setCharacter(makeCarnivore(x, y+1));
+				}
+			}
+
+		}
 	}
 
 	// åªç›êîï\é¶
 	int num_grass = 0;
 	int num_herbivore = 0;
+	int num_carnivore = 0;
 
 	for (auto&& character : characters) {
 		CGrass* grass = dynamic_cast<CGrass*>(character);
 		CHerbivore* herbivore = dynamic_cast<CHerbivore*>(character);
+		CCarnivore* carnivore = dynamic_cast<CCarnivore*>(character);
 		if (grass) {
 			num_grass++;
 		}
 		else if (herbivore) {
 			num_herbivore++;
 		}
+		else if (carnivore) {
+			num_carnivore++;
+		}
 	}
 
 	clsDx();
 	printfDx("Grass = %d\n", num_grass);
 	printfDx("Herbivore = %d\n", num_herbivore);
+	printfDx("Carnivore = %d\n", num_carnivore);
 
 	dumpResultFile(std::string("result.txt"));
 
@@ -223,6 +277,7 @@ int move() {
 	for (auto itr = characters.begin(); itr != characters.end(); itr++) {
 		(*itr)->move();
 	}
+	g_map.updateMaps();
 
 	return 0;
 }
@@ -241,14 +296,23 @@ int exec() {
 int status_update() {
 
 	for (auto&& character : g_map.getCharacters()) {
-		// herbivoreÇÃhpå∏è≠
 		CHerbivore* herbivore = dynamic_cast<CHerbivore*>(character);
+		CCarnivore* carnivore = dynamic_cast<CCarnivore*>(character);
+		// herbivoreÇÃhpå∏è≠
 		if (herbivore) {
 			int hp = herbivore->getHp() - 1;
 			if (hp <= 0) {
 				g_map.setWillRemovedCharacter(herbivore->getX(), herbivore->getY());
 			}
 			herbivore->setHp(hp);
+		}
+		// carnivoreÇÃhpå∏è≠
+		else if (carnivore) {
+			int hp = carnivore->getHp() - 1;
+			if (hp <= 0) {
+				g_map.setWillRemovedCharacter(carnivore->getX(), carnivore->getY());
+			}
+			carnivore->setHp(hp);
 		}
 	}
 
@@ -283,7 +347,7 @@ int main(int argc, char* argv[]) {
 
 		ScreenFlip();
 
-		WaitTimer(1);
+		WaitTimer(10);
 
 	}
 
