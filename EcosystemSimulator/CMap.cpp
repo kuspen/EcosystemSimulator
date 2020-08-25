@@ -98,11 +98,8 @@ void CMap::update_characters() {
 
 	for (auto s_itr = m_willRemovedCharacters.begin(); s_itr != m_willRemovedCharacters.end(); s_itr++) {
 		auto result = std::find(m_characters.begin(), m_characters.end(), (*s_itr));
-		DebugPrint("%s %d %d\n", __func__, (*result)->getX(), (*result)->getY());
 		if (result != m_characters.end()) {
-			DebugPrint("size before = %d\n", m_characters.size());
 			m_characters.erase(result);
-			DebugPrint("size after = %d\n", m_characters.size());
 		}
 	}
 	m_willRemovedCharacters.clear();

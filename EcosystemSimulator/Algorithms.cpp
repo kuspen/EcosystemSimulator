@@ -2,6 +2,7 @@
 #include "DebugUtil.h"
 
 #include <queue>
+#include <random>
 
 
 
@@ -116,6 +117,7 @@ void breadthFirstSearch(CMap* map, CCharacter *character, std::vector<ECharacter
 		}
 	}
 
+
 	delete[] graph;
 	
 }
@@ -217,3 +219,10 @@ void getShortestStep(CMap* map, int* result, int target_x, int target_y, int *ne
 	}
 
 }
+
+unsigned int getRandomValue() {
+
+	std::random_device rand;
+	return (unsigned int) rand();
+}
+

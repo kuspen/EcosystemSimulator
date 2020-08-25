@@ -23,6 +23,12 @@ protected:
 
 	std::vector<ECharacterTypes> m_targets;
 
+	int m_hp;
+	const int m_max_hp = 255;
+
+	int m_recovered_hp;
+	int m_borned_hp;
+
 public:
 	CCharacter(int x, int y, ECharacterTypes type);
 	virtual ~CCharacter();
@@ -33,14 +39,21 @@ public:
 	void setType(ECharacterTypes type);
 	void setRoutine(CRoutine* routine);
 	void setTargets(std::vector<ECharacterTypes> targets);
+	void setHp(int hp);
+	void setRecoveredHp(int hp);
+	void setBornedHp(int hp);
 
 	int getX();
 	int getY();
+	int getHp();
 
 	ECharacterTypes getType();
 	std::vector<ECharacterTypes> getTargets();
 
 	void move();
 	void exec();
+
+	void recover();
+	bool isBorn();
 
 };

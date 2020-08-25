@@ -1,4 +1,5 @@
 #include "CCharacter.h"
+#include "Algorithms.h"
 
 CCharacter::CCharacter(int x, int y, ECharacterTypes type):m_x(x), m_y(y), m_type(type) {}
 
@@ -24,6 +25,19 @@ void CCharacter::setTargets(std::vector<ECharacterTypes> targets) {
 	m_targets = targets;
 }
 
+void CCharacter::setHp(int hp) {
+	if (hp > 255) hp = 255;
+	m_hp = hp;
+}
+
+void CCharacter::setRecoveredHp(int recorverd_hp) {
+	m_recovered_hp = recorverd_hp;
+}
+
+void CCharacter::setBornedHp(int bornedHp) {
+	m_borned_hp = bornedHp;
+}
+
 int CCharacter::getX() {
 	return m_x;
 }
@@ -39,6 +53,24 @@ ECharacterTypes CCharacter::getType() {
 std::vector<ECharacterTypes> CCharacter::getTargets() {
 	return m_targets;
 }
+
+int CCharacter::getHp() {
+	return m_hp;
+}
+
+void CCharacter::recover() {
+	setHp(getHp() + m_recovered_hp);
+}
+
+bool CCharacter::isBorn() {
+	if (m_hp >= m_borned_hp) {
+		if (getRandomValue() % 3 == 0) {
+			return true;
+		}
+	}
+	return false;
+}
+
 
 void CCharacter::move() {
 
@@ -58,5 +90,4 @@ void CCharacter::exec() {
 	}
 
 }
-
 

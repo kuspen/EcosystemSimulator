@@ -50,6 +50,7 @@ void CGreedySearchRoutine::nextCoordinate(CCharacter *character) {
 
 	if (target_x != -1 && target_y != -1) {
 		getShortestStep(m_map, result, target_x, target_y, &m_next_x, &m_next_y);
+//		DebugPrint("next_x=%d next_y=%d\n", m_next_x, m_next_y);
 	}
 
 	//DebugCloseFile();
@@ -91,13 +92,14 @@ void CGreedySearchRoutine::execTarget(CCharacter *character) {
 			target_y = y + 1;
 		}
 		
-		if(target_x != -1 && target_y != 1) {
-			
+		if(target_x != -1 && target_y != -1) {
 			// íœÏ‚İCharacters‚É“o˜^‚³‚ê‚Ä‚¢‚È‚¢ê‡
 			std::set<CCharacter*> willRemovedCharacters =  m_map->getWillRemovedCharacters();
 			CCharacter* target = m_map->getCharacter(target_x, target_y);
 			if (willRemovedCharacters.find(target) == willRemovedCharacters.end()) {
 				m_map->setWillRemovedCharacter(target_x, target_y);
+				character->recover();
+				break;
 			}
 		}
 	}
