@@ -134,6 +134,15 @@ void getShortestStep(CMap* map, int* result, int target_x, int target_y, int *ne
 		UP, DOWN, LEFT, RIGHT
 	};
 
+	// Šù‚É—×‚ªtarget‚Ìê‡‚ÍˆÚ“®‚µ‚È‚¢
+	if (current.y - 1 >= 0 && result[current.x + graph_x_size * (current.y - 1)] == 0 ||
+		current.y + 1 < graph_y_size && result[current.x + graph_x_size * (current.y + 1)] == 0 ||
+		current.x - 1 >= 0 && result[(current.x - 1) + graph_x_size * current.y] == 0 ||
+		current.x + 1 < graph_x_size && result[(current.x + 1) + graph_x_size * current.y] == 0
+		) {
+		return;
+	}
+
 	while (1) {
 
 		int min = graph_x_size * graph_y_size * graph_x_size;

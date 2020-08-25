@@ -10,12 +10,15 @@
 #include "DebugUtil.h"
 
 
-const int WINDOW_WIDTH = 1280;
-const int WINDOW_HEIGHT = 720;
+const int WINDOW_WIDTH = 1920;
+const int WINDOW_HEIGHT = 1080;
+
+const int FIELD_WIDTH = 1280;
+const int FIELD_HEIGHT = 720;
 
 const int CHARACTER_SIZE = 10;
 
-CMap g_map(WINDOW_WIDTH/CHARACTER_SIZE, WINDOW_HEIGHT/CHARACTER_SIZE);
+CMap g_map(FIELD_WIDTH/CHARACTER_SIZE, FIELD_HEIGHT/CHARACTER_SIZE);
 
 FILE* g_result_file_fp = nullptr;
 
@@ -55,6 +58,8 @@ CHerbivore* makeHerbivore(int x, int y) {
 	greedySearchTarget.push_back(ECharacterTypes::CTYPE_GRASS);
 
 	CGreedySearchRoutine* greedySearchRoutine = new CGreedySearchRoutine(&g_map);
+	greedySearchRoutine->setNextX(x);
+	greedySearchRoutine->setNextY(y);
 	herbivore->setRoutine(greedySearchRoutine);
 
 	herbivore->setHp(100);
@@ -85,6 +90,8 @@ int init() {
 	grass3->setHp(100);
 
 	CGreedySearchRoutine* greedySearchRoutine = new CGreedySearchRoutine(&g_map);
+	greedySearchRoutine->setNextX(1);
+	greedySearchRoutine->setNextY(1);
 	herbivore->setRoutine(greedySearchRoutine);
 
 	g_map.setCharacter(herbivore);
@@ -151,7 +158,7 @@ int setup() {
 	for (int x = 0; x < x_size; x++) {
 		for (int y = 0; y < y_size; y++) {
 			if (map[x + x_size * y] == ECharacterTypes::CTYPE_NONE) {
-				int rand_max = 312;
+				int rand_max = 20;
 				int rand = GetRand(rand_max);
 				if (rand == 0) {
 					CGrass* grass = new CGrass(x, y);
@@ -170,19 +177,15 @@ int setup() {
 				int x = herbivore->getX();
 				int y = herbivore->getY();
 				if (x - 1 >= 0 && map[(x - 1) + x_size * y] == ECharacterTypes::CTYPE_NONE) {
-					CHerbivore* new_herbivore = new CHerbivore(x-1, y);
 					g_map.setCharacter(makeHerbivore(x-1, y));
 				}
 				else if (x + 1 < x_size && map[(x + 1) + x_size * y] == ECharacterTypes::CTYPE_NONE) {
-					CHerbivore* new_herbivore = new CHerbivore(x+1, y);
 					g_map.setCharacter(makeHerbivore(x+1, y));
 				}
 				else if (y - 1 >= 0 && map[x + x_size * (y - 1)] == ECharacterTypes::CTYPE_NONE) {
-					CHerbivore* new_herbivore = new CHerbivore(x, y-1);
 					g_map.setCharacter(makeHerbivore(x, y-1));
 				}
 				else if (y + 1 < y_size && map[x + x_size * (y + 1)] == ECharacterTypes::CTYPE_NONE) {
-					CHerbivore* new_herbivore = new CHerbivore(x, y+1);
 					g_map.setCharacter(makeHerbivore(x, y+1));
 				}
 			}
@@ -258,11 +261,11 @@ int status_update() {
 int main(int argc, char* argv[]) {
 
 
-	setDebugMode(EDebugMode::DEBUG_MODE_DEBUG_FULL);
+//	setDebugMode(EDebugMode::DEBUG_MODE_DEBUG_FULL);
 
 
 	init();
-	Sleep(5000);
+//	Sleep(5000);
 
 	while (ProcessMessage() == 0 && CheckHitKey(KEY_INPUT_ESCAPE) == 0) {
 

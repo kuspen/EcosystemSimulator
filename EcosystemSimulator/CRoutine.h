@@ -19,6 +19,8 @@ public:
 	CRoutine(CMap* map);
 	virtual ~CRoutine();
 
+	void setNextX(int x);
+	void setNextY(int y);
 	int getNextX();
 	int getNextY();
 
