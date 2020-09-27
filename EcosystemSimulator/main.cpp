@@ -6,6 +6,7 @@
 #include "CCarnivore.h"
 #include "CHerbivore.h"
 #include "CGrass.h"
+#include "CGraph.h"
 
 #include "CGreedySearchRoutine.h"
 #include "DebugUtil.h"
@@ -17,9 +18,13 @@ const int WINDOW_HEIGHT = 1080;
 const int FIELD_WIDTH = 1280;
 const int FIELD_HEIGHT = 720;
 
+const int GRAPH_WIDTH = 1280;
+const int GRAPH_HEIGHT = 360;
+
 const int CHARACTER_SIZE = 10;
 
 CMap g_map(FIELD_WIDTH/CHARACTER_SIZE, FIELD_HEIGHT/CHARACTER_SIZE);
+CGraph g_graph(GRAPH_WIDTH, GRAPH_HEIGHT);
 
 FILE* g_result_file_fp = nullptr;
 
@@ -123,6 +128,10 @@ int init() {
 	g_map.setCharacter(makeHerbivore(40, 10));
 	g_map.setCharacter(makeHerbivore(50, 10));
 	g_map.setCharacter(makeCarnivore(60, 10));
+
+	g_graph.set_character("Grass", GetColor(0, 255, 0));
+	g_graph.set_character("Herbivore", GetColor(0, 0, 255));
+	g_graph.set_character("Carnivore", GetColor(255, 0, 0));
 
 	ChangeWindowMode(TRUE);
 	SetGraphMode(WINDOW_WIDTH, WINDOW_HEIGHT, 16);
@@ -265,6 +274,12 @@ int setup() {
 	printfDx("Herbivore = %d\n", num_herbivore);
 	printfDx("Carnivore = %d\n", num_carnivore);
 
+	// ƒOƒ‰ƒt•\Ž¦
+	g_graph.set_character_number("Grass", num_grass);
+	g_graph.set_character_number("Herbivore", num_herbivore);
+	g_graph.set_character_number("Carnivore", num_carnivore);
+	g_graph.update_graph();
+
 	dumpResultFile(std::string("result.txt"));
 
 	return 0;
@@ -329,7 +344,7 @@ int main(int argc, char* argv[]) {
 
 
 	init();
-//	Sleep(5000);
+	Sleep(5000);
 
 	while (ProcessMessage() == 0 && CheckHitKey(KEY_INPUT_ESCAPE) == 0) {
 
@@ -347,7 +362,7 @@ int main(int argc, char* argv[]) {
 
 		ScreenFlip();
 
-		WaitTimer(10);
+		WaitTimer(1);
 
 	}
 
